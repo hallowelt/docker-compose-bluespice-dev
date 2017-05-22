@@ -1,0 +1,35 @@
+version: '2'
+services:
+  web70:
+    image: php:7.0-apache
+    ports:
+      - "80:80"
+    links:
+      - database
+      - mail
+    volumes:
+      - ./webroot:/var/www/html
+    working_dir: /var/www
+  database:
+    image: mariadb:10
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./databases:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=hallowelt
+  app_solr:
+    image: bluespice/solr:REL1_27
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./searchindex:/opt/bluespice/data/solr/bluespice/data
+  app_bshtml2pdf:
+    image: bluespice/bshtml2pdf:REL1_27
+    ports:
+      - "8084:8080"
+  mail:
+    image: mailhog/mailhog
+    ports:
+      - "18025:8025"
+      - "1025:1025"
