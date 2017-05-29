@@ -1,7 +1,7 @@
 version: '2'
 services:
   web70:
-    image: php:7.0-apache
+    image: bluespice/web:REL1_27
     ports:
       - "80:80"
     links:
@@ -28,6 +28,10 @@ services:
     image: bluespice/bshtml2pdf:REL1_27
     ports:
       - "8084:8080"
+  parsoid:
+    image: bluespice/parsoid:REL1_27
+    ports:
+      - "8000:8000"
   mail:
     image: mailhog/mailhog
     ports:
