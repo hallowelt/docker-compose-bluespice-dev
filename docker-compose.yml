@@ -7,6 +7,8 @@ services:
     links:
       - database
       - mail
+      - app_solr
+      - app_bshtml2pdf
     volumes:
       - ./webroot:/var/www/html
     working_dir: /var/www
@@ -17,7 +19,7 @@ services:
     volumes:
       - ./databases:/var/lib/mysql
     environment:
-      - MYSQL_ROOT_PASSWORD=hallowelt
+      - MYSQL_ROOT_PASSWORD=l4Dd7A83bn$!74b39$0v
   app_solr:
     image: bluespice/solr:REL1_27
     ports:
@@ -34,8 +36,6 @@ services:
       - "8000:8000"
     volumes:
       - ./configs/parsoid:/opt/parsoid/config
-    extra_hosts:
-      - web70:172.17.0.1
   mail:
     image: mailhog/mailhog
     ports:
