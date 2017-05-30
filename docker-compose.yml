@@ -32,6 +32,10 @@ services:
     image: bluespice/parsoid:REL1_27
     ports:
       - "8000:8000"
+    volumes:
+      - ./configs/parsoid:/opt/parsoid/config
+    extra_hosts:
+      - web70:172.17.0.1
   mail:
     image: mailhog/mailhog
     ports:
