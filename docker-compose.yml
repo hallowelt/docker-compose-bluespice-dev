@@ -1,57 +1,138 @@
-version: '2'
+version: '3'
 services:
-  web73:
+  web:
     image: bluespice/web:REL1_31
+    volumes:
+      - ~/workspace/www:/var/www/html
+      - ./configs/php/php.ini:/usr/local/etc/php/conf.d/php.ini
     ports:
       - "80:80"
-    links:
-      - database
-      - mail
-      - app_bshtml2pdf
-      - app_bshtml2docx
-      - app_bshtmldiff
-      - app_bspagepreviewimage
-      - app_parsoid
-      - app_mathoid
-      - app_elasticsearch
-    volumes:
-      - ./webroot:/var/www/html
-      - ./configs/php/php.ini:/usr/local/etc/php/conf.d/php.ini
-    working_dir: /var/www
+#  web70:
+#    image: webdevops/php-apache-dev:7.0
+#    ports:
+#      - "8070:80"
+#    links:
+#      - database
+#      - mail
+#      - app-bshtml2pdf
+##      - app-bshtml2docx
+#      - app-bshtmldiff
+##      - app-bspagepreviewimage
+#      - app-parsoid
+##      - app-mathoid
+#      - app-elasticsearch
+#    volumes:
+#      - ~/workspace/www:/app
+#      - ./configs/php/php.ini:/opt/docker/etc/php/php.ini
+#  web71:
+#    image: webdevops/php-apache-dev:7.1
+#    ports:
+#      - "8071:80"
+#    links:
+#      - database
+#      - mail
+#      - app-bshtml2pdf
+##      - app-bshtml2docx
+#      - app-bshtmldiff
+##      - app-bspagepreviewimage
+#      - app-parsoid
+##      - app-mathoid
+#      - app-elasticsearch
+#    volumes:
+#      - ~/workspace/www:/app
+#      - ./configs/php/php.ini:/opt/docker/etc/php/php.ini
+#  web72:
+#    image: webdevops/php-apache-dev:7.2
+#    ports:
+#      - "80:80"
+#    links:
+#      - database
+#      - mail
+#      - app-bshtml2pdf
+##      - app-bshtml2docx
+#      - app-bshtmldiff
+##      - app-bspagepreviewimage
+#      - app-parsoid
+##      - app-mathoid
+#      - app-elasticsearch
+#    volumes:
+#      - ~/workspace/www:/app
+#      - ./configs/php/php.ini:/opt/docker/etc/php/php.ini
+#  web73:
+#    image: webdevops/php-apache-dev:7.3
+#    ports:
+#      - "8073:80"
+#    links:
+#      - database
+#      - mail
+#      - app-bshtml2pdf
+##      - app-bshtml2docx
+#      - app-bshtmldiff
+##      - app-bspagepreviewimage
+#      - app-parsoid
+##      - app-mathoid
+#      - app-elasticsearch
+#    volumes:
+#      - ~/workspace/www:/app
+#      - ./configs/php/php.ini:/opt/docker/etc/php/php.ini
+#  web74:
+#    image: webdevops/php-apache-dev:7.4
+#    ports:
+#      - "8074:80"
+#    links:
+#      - database
+#      - mail
+#      - app-bshtml2pdf
+##      - app-bshtml2docx
+#      - app-bshtmldiff
+##      - app-bspagepreviewimage
+#      - app-parsoid
+##      - app-mathoid
+#      - app-elasticsearch
+#    volumes:
+#      - ~/workspace/www:/app
+#      - ./configs/php/php.ini:/opt/docker/etc/php/php.ini
   database:
     image: mariadb:10
     ports:
       - "3306:3306"
     volumes:
-      - ./databases:/var/lib/mysql
+      - ~/workspace/db:/var/lib/mysql
     environment:
-      - MYSQL_ROOT_PASSWORD=hallowelt
-  app_bshtml2pdf:
+      - MYSQL_ROOT_PASSWORD=
+  app-bshtml2pdf:
     image: bluespice/bshtml2pdf:REL1_31
     ports:
-      - "8080:8080"
-  app_bshtmldiff:
+      - "18080:8080"
+  app-bshtmldiff:
     image: bluespice/bshtmldiff:REL1_31
     ports:
-      - "8080:8080"
-  app_bshtml2docx:
-    image: bluespice/bshtml2docx:REL1_31
-    ports:
-      - "80:80"
-  app_parsoid:
+      - "28080:8080"
+#  app-bshtml2docx:
+#    image: bluespice/bshtml2docx:REL1_31
+#    ports:
+#      - "10080:80"
+  app-parsoid:
     image: bluespice/parsoid:REL1_31
     ports:
-      - "8000:8000"
-  app_mathoid:
-    image: wikimedia/mathoid:latest
+      - "18000:8000"
+#  app-mathoid:
+#    image: bluespice/mathoid:REL1_:31
+#    ports:
+#      - "28000:8000"
+  app-elasticsearch:
+    image: bluespice/elasticsearch:REL1_31
+#    volumes:
+#      - ~/workspace/elasticsearch_data:/var/lib/elasticsearch
+#      - ~/workspace/elasticsearch_logs:/var/log/elasticsearch
     ports:
-      - "8000:8000"
-  app_elasticsearch:
-    image: wikimedia/mathoid:latest
-    ports:
-      - "8000:8000"
+      - "9200:9200"
   mail:
     image: mailhog/mailhog
     ports:
       - "18025:8025"
-      - "1025:1025"
+      - "11025:1025"
+#  kibana:
+#    image: library/kibana:6.8.6
+#    ports:
+#      - "5601:5601"
