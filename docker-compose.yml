@@ -1,138 +1,48 @@
 version: '3'
 services:
   web:
-    image: bluespice/web:REL1_31
-    volumes:
-      - ~/workspace/www:/var/www/html
-      - ./configs/php/php.ini:/usr/local/etc/php/conf.d/php.ini
+    image: webdevops/php-apache-dev:8.0
+#    image: webdevops/php-apache-dev:7.4
     ports:
       - "80:80"
-#  web70:
-#    image: webdevops/php-apache-dev:7.0
-#    ports:
-#      - "8070:80"
-#    links:
-#      - database
-#      - mail
-#      - app-bshtml2pdf
-##      - app-bshtml2docx
-#      - app-bshtmldiff
-##      - app-bspagepreviewimage
-#      - app-parsoid
-##      - app-mathoid
-#      - app-elasticsearch
-#    volumes:
-#      - ~/workspace/www:/app
-#      - ./configs/php/php.ini:/opt/docker/etc/php/php.ini
-#  web71:
-#    image: webdevops/php-apache-dev:7.1
-#    ports:
-#      - "8071:80"
-#    links:
-#      - database
-#      - mail
-#      - app-bshtml2pdf
-##      - app-bshtml2docx
-#      - app-bshtmldiff
-##      - app-bspagepreviewimage
-#      - app-parsoid
-##      - app-mathoid
-#      - app-elasticsearch
-#    volumes:
-#      - ~/workspace/www:/app
-#      - ./configs/php/php.ini:/opt/docker/etc/php/php.ini
-#  web72:
-#    image: webdevops/php-apache-dev:7.2
-#    ports:
-#      - "80:80"
-#    links:
-#      - database
-#      - mail
-#      - app-bshtml2pdf
-##      - app-bshtml2docx
-#      - app-bshtmldiff
-##      - app-bspagepreviewimage
-#      - app-parsoid
-##      - app-mathoid
-#      - app-elasticsearch
-#    volumes:
-#      - ~/workspace/www:/app
-#      - ./configs/php/php.ini:/opt/docker/etc/php/php.ini
-#  web73:
-#    image: webdevops/php-apache-dev:7.3
-#    ports:
-#      - "8073:80"
-#    links:
-#      - database
-#      - mail
-#      - app-bshtml2pdf
-##      - app-bshtml2docx
-#      - app-bshtmldiff
-##      - app-bspagepreviewimage
-#      - app-parsoid
-##      - app-mathoid
-#      - app-elasticsearch
-#    volumes:
-#      - ~/workspace/www:/app
-#      - ./configs/php/php.ini:/opt/docker/etc/php/php.ini
-#  web74:
-#    image: webdevops/php-apache-dev:7.4
-#    ports:
-#      - "8074:80"
-#    links:
-#      - database
-#      - mail
-#      - app-bshtml2pdf
-##      - app-bshtml2docx
-#      - app-bshtmldiff
-##      - app-bspagepreviewimage
-#      - app-parsoid
-##      - app-mathoid
-#      - app-elasticsearch
-#    volumes:
-#      - ~/workspace/www:/app
-#      - ./configs/php/php.ini:/opt/docker/etc/php/php.ini
+    volumes:
+      - ${WORKSPACE}/www:/app
+      - ./configs/php/php.ini:/opt/docker/etc/php/php.ini
   database:
     image: mariadb:10
     ports:
       - "3306:3306"
     volumes:
-      - ~/workspace/db:/var/lib/mysql
+      - ${WORKSPACE}/db:/var/lib/mysql
     environment:
-      - MYSQL_ROOT_PASSWORD=
+      - MYSQL_ROOT_PASSWORD=${DBPASS}
   app-bshtml2pdf:
     image: bluespice/bshtml2pdf:REL1_31
     ports:
       - "18080:8080"
-  app-bshtmldiff:
+  app-bshtmldiff: # Only required for BlueSpice 3.x development
     image: bluespice/bshtmldiff:REL1_31
     ports:
       - "28080:8080"
-#  app-bshtml2docx:
-#    image: bluespice/bshtml2docx:REL1_31
-#    ports:
-#      - "10080:80"
-  app-parsoid:
+  app-parsoid: # Only required for BlueSpice 3.x development
     image: bluespice/parsoid:REL1_31
     ports:
-      - "18000:8000"
-#  app-mathoid:
-#    image: bluespice/mathoid:REL1_:31
-#    ports:
-#      - "28000:8000"
+      - "8000:8000"
   app-elasticsearch:
     image: bluespice/elasticsearch:REL1_31
-#    volumes:
-#      - ~/workspace/elasticsearch_data:/var/lib/elasticsearch
-#      - ~/workspace/elasticsearch_logs:/var/log/elasticsearch
+    volumes:
+      - ${WORKSPACE}/elasticsearch:/usr/share/elasticsearch/data
     ports:
       - "9200:9200"
-  mail:
-    image: mailhog/mailhog
+  util-kibana:
+    image: library/kibana:6.8.23
     ports:
-      - "18025:8025"
-      - "11025:1025"
-#  kibana:
-#    image: library/kibana:6.8.6
-#    ports:
-#      - "5601:5601"
+      - "5601:5601"
+  local-ssl-termination-proxy:
+    image: esplo/docker-local-ssl-termination-proxy:latest
+    ports:
+      - 443:443
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      - PORT=80
