@@ -47,3 +47,23 @@ $GLOBALS['wgVirtualRestConfig']['modules']['parsoid']['domain']
 ```
 
 in your `LocalSettings.php` file.
+
+## Troubleshooting
+
+If you are suffering from `low disk watermark [...] exceeded on [...] ...`
+
+You can run
+```
+curl -X PUT "localhost:9200/_cluster/settings" -H 'Content-Type: application/json' -d'
+{
+  "persistent": {
+    "cluster.routing.allocation.disk.watermark.low": "30mb",
+    "cluster.routing.allocation.disk.watermark.high": "20mb",
+    "cluster.routing.allocation.disk.watermark.flood_stage": "10mb",
+    "cluster.info.update.interval": "1m"
+  }
+}
+'
+```
+
+You will probably need to re-create the indexes-
