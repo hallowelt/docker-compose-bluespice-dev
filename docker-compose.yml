@@ -1,46 +1,54 @@
-version: '2'
+version: '3'
 services:
-  web70:
-    image: bluespice/web:REL1_27
+  web:
+    image: webdevops/php-apache-dev:8.0
+#    image: webdevops/php-apache-dev:7.4
     ports:
       - "80:80"
-    links:
-      - database
-      - mail
-      - app_solr
-      - app_bshtml2pdf
     volumes:
-      - ./webroot:/var/www/html
-      - ./configs/php/php.ini:/usr/local/etc/php/conf.d/php.ini
-      - ~/.ssh:/root/.ssh.host
-      - ~/.composer:/root/.composer
-    working_dir: /var/www
+      - ${WORKSPACE}/www:/app
+      - ./configs/php/php.ini:/opt/docker/etc/php/php.ini
   database:
     image: mariadb:10
     ports:
       - "3306:3306"
     volumes:
-      - ./databases:/var/lib/mysql
+      - ${WORKSPACE}/db:/var/lib/mysql
     environment:
-      - MYSQL_ROOT_PASSWORD=l4Dd7A83bn$!74b39$0v
-  app_solr:
-    image: bluespice/solr:REL1_27
+      MYSQL_ROOT_PASSWORD: ${DBPASS}
+  app-bshtml2pdf:
+    image: bluespice/bshtml2pdf:REL1_31
     ports:
-      - "8080:8080"
-    volumes:
-      - ./searchindex:/opt/bluespice/data/solr/bluespice/data
-  app_bshtml2pdf:
-    image: bluespice/bshtml2pdf:REL1_27
+      - "18080:8080"
+  app-bshtmldiff: # Only required for BlueSpice 3.x development
+    image: bluespice/bshtmldiff:REL1_31
     ports:
-      - "8084:8080"
-  parsoid:
-    image: bluespice/parsoid:REL1_27
+      - "28080:8080"
+  app-parsoid: # Only required for BlueSpice 3.x development
+    image: bluespice/parsoid:REL1_31
     ports:
       - "8000:8000"
+  app-elasticsearch:
+    image: bluespice/elasticsearch:REL1_31
     volumes:
-      - ./configs/parsoid:/opt/parsoid/config
-  mail:
-    image: mailhog/mailhog
+      - ${WORKSPACE}/elasticsearch:/usr/share/elasticsearch/data
     ports:
-      - "18025:8025"
-      - "1025:1025"
+      - "9200:9200"
+  util-kibana:
+    image: library/kibana:6.8.23
+    ports:
+      - "5601:5601"
+    environment:
+      ELASTICSEARCH_HOSTS: '["http://app-elasticsearch:9200"]'
+  util-mailhog:
+    image: mailhog/mailhog:latest
+    ports:
+      - "8025:8025"
+  local-ssl-termination-proxy:
+    image: esplo/docker-local-ssl-termination-proxy:latest
+    ports:
+      - 443:443
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      - PORT=80
