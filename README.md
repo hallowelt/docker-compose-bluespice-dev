@@ -53,7 +53,7 @@ in your `LocalSettings.php` file.
 If you are suffering from `low disk watermark [...] exceeded on [...] ...`
 
 You can run
-```
+```shell
 curl -X PUT "localhost:9200/_cluster/settings" -H 'Content-Type: application/json' -d'
 {
   "persistent": {
