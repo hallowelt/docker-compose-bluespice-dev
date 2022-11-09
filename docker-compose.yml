@@ -15,7 +15,7 @@ services:
     volumes:
       - ${WORKSPACE}/db:/var/lib/mysql
     environment:
-      - MYSQL_ROOT_PASSWORD=${DBPASS}
+      MYSQL_ROOT_PASSWORD: ${DBPASS}
   app-bshtml2pdf:
     image: bluespice/bshtml2pdf:REL1_31
     ports:
@@ -38,14 +38,14 @@ services:
     image: library/kibana:6.8.23
     ports:
       - "5601:5601"
+    environment:
+      ELASTICSEARCH_HOSTS: '["http://app-elasticsearch:9200"]'
   util-mailhog:
     image: mailhog/mailhog:latest
     ports:
       - "8025:8025"
   local-ssl-termination-proxy:
     image: esplo/docker-local-ssl-termination-proxy:latest
-    volumes:
-      - ${WORKSPACE}/ssl:/etc/nginx/ssl/
     ports:
       - 443:443
     extra_hosts:

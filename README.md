@@ -29,6 +29,9 @@ In order to wire up your local codebase with the environment you will need to se
 ```php
 $GLOBALS['bsgOverrideUEModulePDFPdfServiceURL'] = 'http://app-bshtml2pdf:8080/BShtml2PDF';
 $GLOBALS['bsgOverrideESBackendHost'] = 'app-elasticsearch';
+
+$GLOBALS['wgEmergencyContact'] = $GLOBALS['wgDBname'] . "@wiki.local";
+$GLOBALS['wgPasswordSender'] = $GLOBALS['wgDBname'] . "@wiki.local";
 $GLOBALS['wgSMTP'] = [
 	'host' => 'util-mailhog',
 	'port' => 1025,
