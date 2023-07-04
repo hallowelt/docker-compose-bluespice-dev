@@ -1,8 +1,9 @@
 version: '3'
 services:
   web:
+    #image: webdevops/php-apache-dev:8.2
+    #image: webdevops/php-apache-dev:8.1
     image: webdevops/php-apache-dev:8.0
-#    image: webdevops/php-apache-dev:7.4
     ports:
       - "80:80"
     volumes:
@@ -17,19 +18,11 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: ${DBPASS}
   app-bshtml2pdf:
-    image: bluespice/bshtml2pdf:REL1_31
+    image: bluespice/bshtml2pdf:4.3.x
     ports:
       - "18080:8080"
-  app-bshtmldiff: # Only required for BlueSpice 3.x development
-    image: bluespice/bshtmldiff:REL1_31
-    ports:
-      - "28080:8080"
-  app-parsoid: # Only required for BlueSpice 3.x development
-    image: bluespice/parsoid:REL1_31
-    ports:
-      - "8000:8000"
   app-elasticsearch:
-    image: bluespice/elasticsearch:REL1_31
+    image: bluespice/elasticsearch:4.3.x
     volumes:
       - ${WORKSPACE}/elasticsearch:/usr/share/elasticsearch/data
     ports:
