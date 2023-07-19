@@ -1,14 +1,17 @@
 version: '3'
 services:
   web:
-    #image: webdevops/php-apache-dev:8.2
-    #image: webdevops/php-apache-dev:8.1
+#    image: webdevops/php-apache-dev:8.2
+#    image: webdevops/php-apache-dev:8.1
     image: webdevops/php-apache-dev:8.0
+#    image: webdevops/php-apache-dev:7.4
     ports:
-      - "80:80"
+       - "80:80"
     volumes:
       - ${WORKSPACE}/www:/app
       - ./configs/php/php.ini:/opt/docker/etc/php/php.ini
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
   database:
     image: mariadb:10
     ports:
@@ -17,6 +20,10 @@ services:
       - ${WORKSPACE}/db:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: ${DBPASS}
+  cache:
+    image: memcached:latest
+    ports:
+      - "11211:11211"
   app-bshtml2pdf:
     image: bluespice/bshtml2pdf:4.3.x
     ports:
@@ -45,3 +52,8 @@ services:
       - "host.docker.internal:host-gateway"
     environment:
       - PORT=80
+  app-mathoid:
+    image: wikimedia/mathoid:bad5ec8d4
+    ports:
+      - "10044:10044"
+
