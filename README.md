@@ -67,3 +67,32 @@ curl -X PUT "localhost:9200/_cluster/settings" -H 'Content-Type: application/jso
 ```
 
 You will probably need to re-create the indexes-
+
+### Composer dependencies
+If you are running local `composer update` in your Mediawiki/BlueSpice project and running into php (Version 8) dependency issues,
+you can create and edit composer config (`vim  ~/.config/composer/config.json`) and add following config:
+
+```
+  {
+        "config": {
+                "minimum-stability": "RC",
+                "platform":{
+                        "php": "8",
+                        "ext-ldap": "8",
+                        "ext-intl": "8",
+                        "ext-pdo_sqlite": "8",
+                        "ext-dom": "8",
+                        "ext-simplexml": "8",
+                        "ext-xml": "8",
+                        "ext-xmlreader": "8",
+                        "ext-xmlwriter": "8",
+                        "ext-mongodb": "8",
+                        "ext-gd": "8",
+                        "ext-zip": "8"
+                },
+                "allow-plugins": {
+                        "composer/installers": true
+                }
+        }
+  }
+```
